@@ -4,6 +4,7 @@ import { prisma } from '@/index';
 import { authenticate, requirePlan } from '@/middleware/auth';
 import { asyncHandler, createError } from '@/middleware/errorHandler';
 import { logger } from '@/utils/logger';
+import fetch from 'node-fetch';
 
 const router = express.Router();
 
@@ -239,6 +240,38 @@ router.get('/:id', [
     success: true,
     data: { tool: toolWithStats }
   });
+}));
+
+/**
+ * POST /api/tools/:id/session
+ * Launch remote chromium via browserless and return ws endpoint + target URL
+ */
+router.post('/:id/session', authenticate, asyncHandler(async (req, res) => {
+  const toolId = parseInt(req.params.id);
+  const tool = await prisma.tool.findUnique({ where: { id: toolId } });
+  if (!tool) return res.status(404).json({ success: false, message: 'Tool not found' });
+
+  const proxy = tool.proxyId ? await prisma.proxy.findUnique({ where: { id: tool.proxyId } }) : null;
+
+  const launchArgs: string[] = ['--no-sandbox','--disable-dev-shm-usage','--no-first-run','--no-default-browser-check'];
+  if (proxy) launchArgs.push(`--proxy-server=${proxy.tipo || 'http'}://${proxy.host}:${proxy.porta}`);
+
+  const browserlessUrl = process.env.BROWSERLESS_URL || 'http://localhost:3005';
+  const resp = await fetch(`${browserlessUrl}/chromium/launch?headless=false`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ launchArgs, blockAds: true, headless: false })
+  });
+  if (!resp.ok) {
+    const text = await resp.text();
+    return res.status(500).json({ success: false, message: 'Failed to launch browser', detail: text });
+  }
+  const { wsEndpoint } = await resp.json() as any;
+
+  const accessLog = await prisma.accessLog.create({
+    data: { userId: req.user?.id, toolId, proxyId: proxy?.id || null, status: 'active', metadata: { wsEndpoint } }
+  });
+
+  res.json({ success: true, data: { wsEndpoint, accessLogId: accessLog.id, url: tool.urlAcesso } });
 }));
 
 /**
