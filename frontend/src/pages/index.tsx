@@ -14,29 +14,29 @@ import {
 
 const features = [
   {
-    name: 'IP Fixo Garantido',
-    description: 'Acesse ferramentas com o mesmo IP sempre, evitando bloqueios e restrições.',
+    name: 'IP fixo confiável',
+    description: 'Acesse sempre com o mesmo IP para evitar bloqueios e verificações.',
     icon: GlobeAltIcon,
   },
   {
-    name: 'Gestão de Equipes',
-    description: 'Compartilhe acesso com sua equipe com controle granular de permissões.',
-    icon: UserGroupIcon,
+    name: 'Controle de sessões',
+    description: 'Limites por plano, time ou usuário. Bloqueios automáticos quando exceder.',
+    icon: CogIcon,
   },
   {
-    name: 'Segurança Enterprise',
-    description: 'Criptografia AES-256, compliance LGPD e auditoria completa.',
+    name: 'Proxy inteligente',
+    description: 'Failover por região e rotação controlada nos planos avançados.',
     icon: ShieldCheckIcon,
   },
   {
-    name: 'Analytics Avançado',
-    description: 'Métricas detalhadas de uso, performance e otimização de custos.',
-    icon: ChartBarIcon,
+    name: 'Acesso por times',
+    description: 'Papéis e permissões para colaborar sem expor credenciais.',
+    icon: UserGroupIcon,
   },
   {
-    name: 'Proxy Inteligente',
-    description: 'Failover automático e rotação baseada em performance.',
-    icon: CogIcon,
+    name: 'Auditoria e logs',
+    description: 'Histórico completo de acessos e exportação para CSV/Excel.',
+    icon: ChartBarIcon,
   },
 ];
 
@@ -214,11 +214,8 @@ export default function Home() {
                       className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start"
                     >
                       <div className="rounded-md shadow glow-hover">
-                        <Link
-                          href="/auth/register"
-                          className="btn btn-primary"
-                        >
-                          Começar grátis
+                        <Link href="/auth/register" className="btn btn-primary">
+                          Escolher meu plano
                           <ArrowRightIcon className="ml-2 w-5 h-5" />
                         </Link>
                       </div>
@@ -227,7 +224,7 @@ export default function Home() {
                           href="/demo"
                           className="w-full flex items-center justify-center px-8 py-3 border border-primary-400/30 text-base font-medium rounded-md text-primary-300 bg-transparent hover:bg-white/5 md:py-4 md:text-lg md:px-10 transition-colors duration-200"
                         >
-                          Ver demonstração
+                          Como funciona
                         </Link>
                       </div>
                     </motion.div>
@@ -277,14 +274,14 @@ export default function Home() {
           <div id="features" className="py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="lg:text-center">
-                <h2 className="text-base text-primary-600 font-semibold tracking-wide uppercase">
-                  Por que compartilhar ferramentas?
+                 <h2 className="text-base text-primary-600 font-semibold tracking-wide uppercase">
+                  As melhores ferramentas em uma única assinatura
                 </h2>
-                <p className="mt-2 text-3xl leading-8 font-bold tracking-tight sm:text-4xl">
-                  Tudo que você precisa para compartilhar ferramentas com controle e segurança
+                 <p className="mt-2 text-3xl leading-8 font-bold tracking-tight sm:text-4xl">
+                  Compartilhe ferramentas com controle e segurança
                 </p>
-                <p className="mt-4 max-w-2xl text-xl text-secondary lg:mx-auto">
-                  Centralize acessos, defina limites de sessão e mantenha o IP fixo para reduzir bloqueios e fricção.
+                 <p className="mt-4 max-w-2xl text-xl text-secondary lg:mx-auto">
+                  Uma assinatura, várias plataformas. Centralize acessos, mantenha IP fixo e controle o uso sem dor de cabeça.
                 </p>
               </div>
 
