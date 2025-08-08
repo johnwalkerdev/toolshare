@@ -43,6 +43,7 @@ services:
       JWT_SECRET: your-super-secret-jwt-key-change-in-production
       NODE_ENV: development
       PORT: 4000
+      BROWSERLESS_URL: http://browser:3000
     depends_on:
       - postgres
       - redis
