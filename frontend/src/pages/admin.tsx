@@ -100,6 +100,19 @@ export default function AdminPanel() {
     }
   };
 
+  const openRemoteBrowser = async (toolId: number) => {
+    try {
+      const r = await fetch(`/api/tools/${toolId}/session`, { method: 'POST' });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j?.message || 'Falha ao iniciar sessão');
+      // Por ora, abrimos a URL da ferramenta em nova aba.
+      // A visualização interativa via noVNC/Guacamole será conectada ao wsEndpoint retornado (j.data.wsEndpoint) em uma próxima etapa.
+      window.open(j.data.url, '_blank');
+    } catch (e) {
+      alert('Não foi possível iniciar o navegador remoto');
+    }
+  };
+
   const toggleUserStatus = async (userId: string, status: boolean) => {
     try {
       await fetch(`/api/admin/users/${userId}`, {
@@ -359,7 +372,7 @@ export default function AdminPanel() {
                               {tool.ativo ? 'Desativar' : 'Ativar'}
                             </button>
                             <button className="text-primary-400 hover:text-primary-300 mr-4" onClick={() => setOverrideOpenId(overrideOpenId === tool.id ? null : tool.id)}>Definir Proxy</button>
-                            <a href={(tool as any).urlAcesso} target="_blank" rel="noreferrer" className="text-secondary hover:text-primary">Abrir</a>
+                            <button className="text-secondary hover:text-primary" onClick={() => openRemoteBrowser(tool.id)}>Abrir via navegador</button>
                           </td>
                         </tr>
                       ))}
