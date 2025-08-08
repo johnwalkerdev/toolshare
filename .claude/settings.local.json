@@ -6,7 +6,8 @@
       "Bash(npx prisma generate:*)",
       "Bash(npx prisma migrate dev:*)",
       "Bash(npm run dev:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }

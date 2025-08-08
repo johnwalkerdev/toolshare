@@ -1,57 +1,109 @@
-# ToolShare - Guia de Deploy na Vercel
+# ToolShare - Guia de Deploy na Vercel (100% GRATUITO)
 
-## 🚀 Passos para Deploy
+## 🆓 Deploy Gratuito em 5 Minutos
 
-### 1. Pré-requisitos
-- Conta no Vercel
-- Conta no GitHub
-- Banco PostgreSQL (recomendado: Neon, Supabase ou PlanetScale)
+### 1. PostgreSQL Gratuito - Neon (Recomendado)
+1. **Acesse**: [neon.tech](https://neon.tech)
+2. **Cadastre-se** com GitHub (mais rápido)
+3. **Crie projeto**: "toolshare-db"
+4. **Copie a DATABASE_URL** que aparece automaticamente
 
-### 2. Preparar o Repositório
+### 2. Deploy Automático no Vercel
+1. **Acesse**: [vercel.com](https://vercel.com) 
+2. **Login** com GitHub
+3. **Import Project** → selecione este repositório
+4. **Configure Environment Variables**:
+
 ```bash
-git init
-git add .
-git commit -m "Initial commit - ToolShare SaaS Platform"
-git branch -M main
-git remote add origin <SEU_REPOSITORIO_GITHUB>
-git push -u origin main
+# Cole estas variáveis NO VERCEL durante o import:
+
+DATABASE_URL=sua_connection_string_do_neon_aqui
+
+JWT_SECRET=toolshare_jwt_2024_super_secret_key_minimum_32_chars
+
+CORS_ORIGIN=https://toolshare.vercel.app
+
+NEXT_PUBLIC_API_URL=https://toolshare.vercel.app/api
+
+NEXT_PUBLIC_APP_URL=https://toolshare.vercel.app
 ```
 
-### 3. Conectar ao Vercel
-1. Acesse [vercel.com](https://vercel.com) e faça login
-2. Clique em "New Project"
-3. Importe seu repositório do GitHub
-4. Configure as variáveis de ambiente (veja abaixo)
-5. Clique em "Deploy"
+5. **Deploy!** 🚀
 
-### 4. Configurar Variáveis de Ambiente no Vercel
+### 3. Configuração Automática Pós-Deploy
 
-#### Para o Backend:
-```
-DATABASE_URL=postgresql://usuario:senha@host:porta/database?sslmode=require
-JWT_SECRET=seu_jwt_secret_super_seguro_aqui_32_chars_min
-CORS_ORIGIN=https://seu-dominio.vercel.app
+Após o primeiro deploy, execute APENAS 1 comando:
+
+```bash
+npm run setup
 ```
 
-#### Para o Frontend:
+**Pronto!** ✨ O script automaticamente:
+- Gera o cliente Prisma
+- Cria todas as tabelas
+- Popula com dados iniciais
+- Cria usuários admin e teste
+
+## 🎯 Bancos PostgreSQL 100% Gratuitos
+
+### 🥇 Neon (Melhor opção)
+- ✅ **3GB gratuito para sempre**
+- ✅ Conexão direta via URL
+- ✅ Interface web incluída
+- ✅ Backup automático
+- 🔗 [neon.tech](https://neon.tech)
+
+### 🥈 Supabase 
+- ✅ **500MB gratuito + 2GB de bandwidth**
+- ✅ Dashboard admin incluído
+- ✅ Auth automático (opcional)
+- 🔗 [supabase.com](https://supabase.com)
+
+### 🥉 Railway
+- ✅ **1GB gratuito**
+- ✅ $5 de crédito mensal grátis
+- ✅ Deploy automático
+- 🔗 [railway.app](https://railway.app)
+
+## ⚡ Setup Ultra-Rápido (Neon + Vercel)
+
+### Passo 1: Neon (2 minutos)
+1. [neon.tech](https://neon.tech) → Sign up with GitHub
+2. Create project: "toolshare"
+3. Copiar connection string (postgresql://...)
+
+### Passo 2: Vercel (2 minutos)  
+1. [vercel.com](https://vercel.com) → Import from GitHub
+2. Selecionar repositório "ToolShare"
+3. Colar variáveis de ambiente (veja modelo acima)
+4. Deploy!
+
+### Passo 3: Inicializar DB (1 minuto)
+```bash
+npm run setup
 ```
-NEXT_PUBLIC_API_URL=https://seu-dominio.vercel.app/api
-NEXT_PUBLIC_APP_URL=https://seu-dominio.vercel.app
+
+**Total: 5 minutos** ⏱️
+
+## 🔧 Variáveis de Ambiente - Template Completo
+
+```env
+# 📄 COLE ISTO NO VERCEL (substitua apenas a DATABASE_URL):
+
+DATABASE_URL=postgresql://usuario:senha@host.neon.tech/toolshare?sslmode=require
+
+JWT_SECRET=toolshare_production_secret_key_2024_very_secure_minimum_32_chars
+
+CORS_ORIGIN=https://toolshare.vercel.app
+
+NEXT_PUBLIC_API_URL=https://toolshare.vercel.app/api  
+
+NEXT_PUBLIC_APP_URL=https://toolshare.vercel.app
+
+NODE_ENV=production
 ```
 
-### 5. Configurar o Banco de Dados
-
-#### Opção A: Neon (Recomendado)
-1. Acesse [neon.tech](https://neon.tech) e crie uma conta
-2. Crie um novo projeto PostgreSQL
-3. Copie a connection string
-4. Cole em `DATABASE_URL` no Vercel
-
-#### Opção B: Supabase
-1. Acesse [supabase.com](https://supabase.com) e crie um projeto
-2. Vá em Settings > Database
-3. Copie a connection string (mode: Session)
-4. Cole em `DATABASE_URL` no Vercel
+**💡 Dica**: No Vercel, as variáveis `NEXT_PUBLIC_*` são configuradas automaticamente para o frontend!
 
 ### 6. Executar Migrations e Seed
 
