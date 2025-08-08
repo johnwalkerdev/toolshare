@@ -723,6 +723,133 @@ router.get('/tools', authenticate, requireAdmin, [
 }));
 
 /**
+ * POST /api/admin/tools
+ * Create a new tool with default proxy
+ */
+router.post('/tools', authenticate, requireAdmin, [
+  body('nome').isString().isLength({ min: 2 }).withMessage('Nome é obrigatório'),
+  body('slug').optional().isString(),
+  body('urlAcesso').isURL().withMessage('urlAcesso deve ser uma URL válida'),
+  body('descricao').optional().isString(),
+  body('icone').optional().isString(),
+  body('categoriaId').optional().isInt(),
+  body('proxyId').optional().isInt(),
+  body('limiteUsuarios').optional().isInt({ min: 1 }),
+  body('planosPermitidos').optional().isArray()
+], asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, message: 'Validation error', errors: errors.array() });
+  }
+
+  const { nome, slug, urlAcesso, descricao, icone, categoriaId, proxyId, limiteUsuarios = 1, planosPermitidos = [] } = req.body;
+
+  const created = await prisma.tool.create({
+    data: {
+      nome,
+      slug: slug || nome.toLowerCase().replace(/\s+/g, '-'),
+      urlAcesso,
+      descricao: descricao || null,
+      icone: icone || null,
+      categoriaId: categoriaId || null,
+      proxyId: proxyId || null,
+      limiteUsuarios,
+      planosPermitidos
+    }
+  });
+
+  res.status(201).json({ success: true, message: 'Tool created', data: { tool: created } });
+}));
+
+/**
+ * PUT /api/admin/tools/:id
+ * Update tool fields
+ */
+router.put('/tools/:id', authenticate, requireAdmin, [
+  param('id').isInt(),
+  body('nome').optional().isString(),
+  body('slug').optional().isString(),
+  body('urlAcesso').optional().isURL(),
+  body('descricao').optional().isString(),
+  body('icone').optional().isString(),
+  body('categoriaId').optional().isInt(),
+  body('proxyId').optional().isInt(),
+  body('limiteUsuarios').optional().isInt({ min: 1 }),
+  body('planosPermitidos').optional().isArray(),
+], asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, message: 'Validation error', errors: errors.array() });
+  }
+
+  const id = parseInt(req.params.id);
+  const updated = await prisma.tool.update({
+    where: { id },
+    data: {
+      ...req.body,
+    }
+  });
+
+  res.json({ success: true, message: 'Tool updated', data: { tool: updated } });
+}));
+
+/**
+ * POST /api/admin/tools/:id/override
+ * Assign proxy override for a user or team for a specific tool
+ */
+router.post('/tools/:id/override', authenticate, requireAdmin, [
+  param('id').isInt(),
+  body('scope').isIn(['user','team']).withMessage('scope deve ser user ou team'),
+  body('scopeId').notEmpty(),
+  body('proxyId').isInt()
+], asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, message: 'Validation error', errors: errors.array() });
+  }
+  const toolId = parseInt(req.params.id);
+  const { scope, scopeId, proxyId } = req.body as { scope: 'user'|'team'; scopeId: string; proxyId: number };
+
+  if (scope === 'user') {
+    await prisma.userToolProxy.upsert({
+      where: { userId_toolId: { userId: scopeId, toolId } },
+      create: { userId: scopeId, toolId, proxyId },
+      update: { proxyId }
+    });
+  } else {
+    const teamId = parseInt(scopeId);
+    await prisma.teamToolProxy.upsert({
+      where: { teamId_toolId: { teamId, toolId } },
+      create: { teamId, toolId, proxyId },
+      update: { proxyId }
+    });
+  }
+
+  res.json({ success: true, message: 'Override saved' });
+}));
+
+/**
+ * GET /api/admin/analytics/now
+ * Real-time counters for online users/sessions/tools
+ */
+router.get('/analytics/now', authenticate, requireAdmin, asyncHandler(async (_req, res) => {
+  const [activeSessions, activeUsers, activeTools] = await Promise.all([
+    prisma.accessLog.count({ where: { status: 'active' } }),
+    prisma.userSession.groupBy({ by: ['userId'], where: { isActive: true }, _count: { userId: true } }),
+    prisma.tool.count({ where: { ativo: true } })
+  ]);
+
+  res.json({
+    success: true,
+    data: {
+      activeSessions,
+      onlineUsers: activeUsers.length,
+      activeTools
+    }
+  });
+}));
+
+/**
  * PATCH /api/admin/tools/:id
  * Update tool status (quick toggle)
  */
