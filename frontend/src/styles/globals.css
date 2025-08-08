@@ -89,6 +89,10 @@ body {
   .border-primary { border-color: var(--border-primary); }
   .accent-primary { color: var(--accent-primary); }
   .accent-secondary { color: var(--accent-secondary); }
+  /* Placeholder color utility to use with @apply */
+  .placeholder-text-tertiary::placeholder { color: var(--text-tertiary); opacity: 1; }
+  .placeholder-text-tertiary::-ms-input-placeholder { color: var(--text-tertiary); }
+  .placeholder-text-tertiary::-moz-placeholder { color: var(--text-tertiary); opacity: 1; }
   
   /* Sophisticated Glass Effect */
   .glass {
