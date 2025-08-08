@@ -10,6 +10,8 @@ import {
   ChartBarIcon,
   CogIcon,
   CheckIcon,
+  PlusIcon,
+  MinusIcon,
 } from '@heroicons/react/24/outline';
 
 const features = [
@@ -96,6 +98,7 @@ const tools = [
 
 export default function Home() {
   const [email, setEmail] = useState('');
+  const [faqOpen, setFaqOpen] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -270,6 +273,18 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Brands Section */}
+          <section className="py-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <p className="text-center text-sm text-secondary mb-6">Ferramentas que você terá acesso</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 text-center">
+                {['ChatGPT Plus','Claude','Grok','Perplexity','Gemini','Midjourney','Leonardo AI','Runway','Freepik','Envato Elements','Motion Array','Storyblocks','Captions','Placeit','Flaticon','Vecteezy','Vectorizer','Canva Pro','CapCut Pro','TurboScribe'].map((brand) => (
+                  <div key={brand} className="btn-glass rounded-xl py-2 text-sm text-secondary">{brand}</div>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* Features Section */}
           <div id="features" className="py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -325,7 +340,7 @@ export default function Home() {
               </div>
 
               <div className="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
-                {plans.map((plan, index) => (
+                {[{...plans[0], price: 37}, {...plans[1], price: 57}, {...plans[2], price: 97}].map((plan, index) => (
                   <motion.div
                     key={plan.name}
                     initial={{ opacity: 0, y: 20 }}
@@ -350,7 +365,7 @@ export default function Home() {
                       <h3 className="text-lg leading-6 font-medium">{plan.name}</h3>
                       <p className="mt-2 text-base text-secondary">{plan.description}</p>
                       <p className="mt-8">
-                        <span className="text-4xl font-bold">${plan.price}</span>
+                        <span className="text-4xl font-bold">R$ {plan.price},00</span>
                         <span className="text-base font-medium text-secondary">/mês</span>
                       </p>
                       <Link
@@ -394,6 +409,13 @@ export default function Home() {
               <p className="mt-4 text-lg leading-6 text-primary-200">
                 Sem cartão de crédito. Sem compromisso. Cancele quando quiser.
               </p>
+              <div className="mt-4 card">
+                <h3 className="text-xl font-semibold mb-2">Garantia</h3>
+                <p className="text-secondary">
+                  Teste o ToolShare por 7 dias sem compromisso. Se você não ficar feliz com a experiência,
+                  reembolsamos 100% do valor pago nesse período, sem complicação.
+                </p>
+              </div>
               <form onSubmit={handleSubmit} className="mt-8 sm:flex sm:justify-center">
                 <div className="min-w-0 flex-1 max-w-md">
                   <label htmlFor="email" className="sr-only">
@@ -436,6 +458,9 @@ export default function Home() {
               <Link href="/contact" className="text-secondary hover:text-primary">
                 Contato
               </Link>
+              <Link href="https://instagram.com/toolshare" target="_blank" className="text-secondary hover:text-primary">
+                Instagram
+              </Link>
             </div>
             <div className="mt-8 md:mt-0 md:order-1">
               <p className="text-center text-base text-secondary">
@@ -445,6 +470,32 @@ export default function Home() {
           </div>
         </footer>
       </div>
+      {/* FAQ */}
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h3 className="text-2xl font-bold mb-6">Restou alguma dúvida?</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              {id:'tempo', q:'Quanto tempo dura a assinatura?', a:'Planos mensais com renovação automática. Você pode cancelar quando quiser.'},
+              {id:'pagamento', q:'Como funciona o pagamento?', a:'Cartão ou Pix via provedor de pagamento. A cobrança é recorrente conforme o plano.'},
+              {id:'garantia', q:'Existe garantia de satisfação?', a:'Sim, 7 dias de garantia com reembolso integral para novos assinantes.'},
+              {id:'sites', q:'Quais são todos os sites?', a:'Disponibilizamos as principais ferramentas listadas acima. A oferta pode variar por plano e disponibilidade.'},
+              {id:'suporte', q:'Existe suporte em caso de dúvidas?', a:'Sim, suporte via e‑mail e WhatsApp para planos elegíveis.'},
+              {id:'atualizacoes', q:'Tenho direito às atualizações?', a:'Sim, melhorias e novas integrações são liberadas continuamente.'},
+            ].map(item => (
+              <div key={item.id} className="card">
+                <button onClick={() => setFaqOpen(faqOpen === item.id ? null : item.id)} className="w-full flex items-center justify-between text-left">
+                  <span className="font-medium">{item.q}</span>
+                  {faqOpen === item.id ? <MinusIcon className="w-5 h-5"/> : <PlusIcon className="w-5 h-5"/>}
+                </button>
+                {faqOpen === item.id && (
+                  <p className="mt-3 text-secondary">{item.a}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   );
 }
