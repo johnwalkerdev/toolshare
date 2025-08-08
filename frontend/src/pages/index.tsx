@@ -489,6 +489,34 @@ export default function Home() {
               </form>
             </div>
           </div>
+
+          {/* FAQ */}
+          <section className="py-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h3 className="text-2xl font-bold mb-6">Restou alguma dúvida?</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  {id:'tempo', q:'Quanto tempo dura a assinatura?', a:'Planos mensais com renovação automática. Você pode cancelar quando quiser.'},
+                  {id:'pagamento', q:'Como funciona o pagamento?', a:'Cartão ou Pix via provedor de pagamento. A cobrança é recorrente conforme o plano.'},
+                  {id:'garantia', q:'Existe garantia de satisfação?', a:'Sim, 7 dias de garantia com reembolso integral para novos assinantes.'},
+                  {id:'sites', q:'Quais são todos os sites?', a:'Disponibilizamos as principais ferramentas listadas acima. A oferta pode variar por plano e disponibilidade.'},
+                  {id:'suporte', q:'Existe suporte em caso de dúvidas?', a:'Sim, suporte via e‑mail e WhatsApp para planos elegíveis.'},
+                  {id:'atualizacoes', q:'Tenho direito às atualizações?', a:'Sim, melhorias e novas integrações são liberadas continuamente.'},
+                ].map(item => (
+                  <div key={item.id} className="card">
+                    <button onClick={() => setFaqOpen(faqOpen === item.id ? null : item.id)} className="w-full flex items-center justify-between text-left">
+                      <span className="font-medium">{item.q}</span>
+                      {faqOpen === item.id ? <MinusIcon className="w-5 h-5"/> : <PlusIcon className="w-5 h-5"/>}
+                    </button>
+                    {faqOpen === item.id && (
+                      <p className="mt-3 text-secondary">{item.a}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
         </main>
 
         {/* Footer */}
