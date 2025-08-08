@@ -25,10 +25,30 @@ export default function AdminPanel() {
   const [users, setUsers] = useState<User[]>([]);
   const [tools, setTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(true);
+  const [analyticsNow, setAnalyticsNow] = useState<{activeSessions:number; onlineUsers:number; activeTools:number} | null>(null);
+
+  const [newTool, setNewTool] = useState({
+    nome: '', urlAcesso: '', descricao: '', icone: '', categoriaId: '', proxyId: '', limiteUsuarios: 1, planosPermitidos: ''
+  });
+  const [overrideOpenId, setOverrideOpenId] = useState<number | null>(null);
+  const [overrideForm, setOverrideForm] = useState<{scope:'user'|'team'; scopeId:string; proxyId:string}>({scope:'user', scopeId:'', proxyId:''});
 
   useEffect(() => {
     fetchData();
   }, [activeTab]);
+
+  useEffect(() => {
+    let t: any;
+    const loop = async () => {
+      try {
+        const r = await fetch('/api/admin/analytics/now');
+        if (r.ok) setAnalyticsNow((await r.json()).data);
+      } catch {}
+      t = setTimeout(loop, 5000);
+    };
+    loop();
+    return () => t && clearTimeout(t);
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
@@ -36,16 +56,48 @@ export default function AdminPanel() {
       if (activeTab === 'users') {
         const response = await fetch('/api/admin/users');
         const data = await response.json();
-        setUsers(data);
+        setUsers(data.data?.users || data);
       } else if (activeTab === 'tools') {
         const response = await fetch('/api/admin/tools');
         const data = await response.json();
-        setTools(data);
+        setTools(data.data?.tools || data);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
     setLoading(false);
+  };
+
+  const createTool = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const payload: any = {
+      nome: newTool.nome,
+      urlAcesso: newTool.urlAcesso,
+      descricao: newTool.descricao || undefined,
+      icone: newTool.icone || undefined,
+      categoriaId: newTool.categoriaId ? Number(newTool.categoriaId) : undefined,
+      proxyId: newTool.proxyId ? Number(newTool.proxyId) : undefined,
+      limiteUsuarios: Number(newTool.limiteUsuarios) || 1,
+      planosPermitidos: newTool.planosPermitidos ? newTool.planosPermitidos.split(',').map(s=>Number(s.trim())).filter(Boolean) : []
+    };
+    const r = await fetch('/api/admin/tools', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(payload) });
+    if (r.ok) {
+      setNewTool({ nome: '', urlAcesso: '', descricao: '', icone: '', categoriaId: '', proxyId: '', limiteUsuarios: 1, planosPermitidos: '' });
+      fetchData();
+    } else {
+      alert('Erro ao criar ferramenta');
+    }
+  };
+
+  const saveOverride = async (toolId: number) => {
+    const r = await fetch(`/api/admin/tools/${toolId}/override`, { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ scope: overrideForm.scope, scopeId: overrideForm.scopeId, proxyId: Number(overrideForm.proxyId) }) });
+    if (r.ok) {
+      setOverrideOpenId(null);
+      setOverrideForm({ scope: 'user', scopeId: '', proxyId: '' });
+      alert('Override salvo');
+    } else {
+      alert('Falha ao salvar override');
+    }
   };
 
   const toggleUserStatus = async (userId: string, status: boolean) => {
@@ -98,6 +150,13 @@ export default function AdminPanel() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {analyticsNow && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div className="card p-4"><p className="text-sm text-secondary">Usuários online</p><p className="text-2xl font-bold">{analyticsNow.onlineUsers}</p></div>
+            <div className="card p-4"><p className="text-sm text-secondary">Sessões ativas</p><p className="text-2xl font-bold">{analyticsNow.activeSessions}</p></div>
+            <div className="card p-4"><p className="text-sm text-secondary">Ferramentas ativas</p><p className="text-2xl font-bold">{analyticsNow.activeTools}</p></div>
+          </div>
+        )}
         {/* Navigation Tabs */}
         <div className="border-b border-primary-200/30 mb-8">
           <nav className="-mb-px flex space-x-8">
@@ -222,6 +281,19 @@ export default function AdminPanel() {
                     Ferramentas ({tools.length})
                   </h2>
                 </div>
+                <div className="px-6 py-4 border-b border-primary-200/10">
+                  <form onSubmit={createTool} className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <input className="input-glass" placeholder="Nome" value={newTool.nome} onChange={e=>setNewTool({...newTool, nome:e.target.value})} required />
+                    <input className="input-glass" placeholder="URL de acesso" value={newTool.urlAcesso} onChange={e=>setNewTool({...newTool, urlAcesso:e.target.value})} required />
+                    <input className="input-glass" placeholder="Descrição" value={newTool.descricao} onChange={e=>setNewTool({...newTool, descricao:e.target.value})} />
+                    <input className="input-glass" placeholder="Ícone (emoji/URL)" value={newTool.icone} onChange={e=>setNewTool({...newTool, icone:e.target.value})} />
+                    <input className="input-glass" placeholder="Categoria ID" value={newTool.categoriaId} onChange={e=>setNewTool({...newTool, categoriaId:e.target.value})} />
+                    <input className="input-glass" placeholder="Proxy ID padrão" value={newTool.proxyId} onChange={e=>setNewTool({...newTool, proxyId:e.target.value})} />
+                    <input className="input-glass" placeholder="Limite usuários" type="number" min={1} value={newTool.limiteUsuarios} onChange={e=>setNewTool({...newTool, limiteUsuarios:Number(e.target.value)})} />
+                    <input className="input-glass md:col-span-2" placeholder="Planos permitidos (IDs separados por vírgula)" value={newTool.planosPermitidos} onChange={e=>setNewTool({...newTool, planosPermitidos:e.target.value})} />
+                    <button type="submit" className="btn btn-primary">Adicionar</button>
+                  </form>
+                </div>
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-primary-200/20">
                     <thead className="bg-tertiary">
@@ -232,6 +304,7 @@ export default function AdminPanel() {
                         <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
                           Categoria
                         </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Proxy padrão</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
                           Limite Usuários
                         </th>
@@ -261,6 +334,7 @@ export default function AdminPanel() {
                               {tool.categoria?.nome || 'Sem categoria'}
                             </span>
                           </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary">{(tool as any).proxy?.nome || '-'}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary">
                             {tool.limiteUsuarios} usuários
                           </td>
@@ -284,15 +358,36 @@ export default function AdminPanel() {
                             >
                               {tool.ativo ? 'Desativar' : 'Ativar'}
                             </button>
-                            <button className="text-primary-400 hover:text-primary-300">
-                              Editar
-                            </button>
+                            <button className="text-primary-400 hover:text-primary-300 mr-4" onClick={() => setOverrideOpenId(overrideOpenId === tool.id ? null : tool.id)}>Definir Proxy</button>
+                            <a href={(tool as any).urlAcesso} target="_blank" rel="noreferrer" className="text-secondary hover:text-primary">Abrir</a>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
+                {overrideOpenId && (
+                  <div className="px-6 py-4 border-t border-primary-200/10">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+                      <div>
+                        <label className="text-sm text-secondary">Escopo</label>
+                        <select className="input-glass" value={overrideForm.scope} onChange={e=>setOverrideForm({...overrideForm, scope: e.target.value as any})}>
+                          <option value="user">Usuário</option>
+                          <option value="team">Time</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-sm text-secondary">ID do usuário/time</label>
+                        <input className="input-glass" placeholder="cuid ou ID" value={overrideForm.scopeId} onChange={e=>setOverrideForm({...overrideForm, scopeId:e.target.value})} />
+                      </div>
+                      <div>
+                        <label className="text-sm text-secondary">Proxy ID</label>
+                        <input className="input-glass" placeholder="proxyId" value={overrideForm.proxyId} onChange={e=>setOverrideForm({...overrideForm, proxyId:e.target.value})} />
+                      </div>
+                      <button className="btn btn-primary" onClick={() => saveOverride(overrideOpenId)}>Salvar Override</button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
