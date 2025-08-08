@@ -331,15 +331,15 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                     viewport={{ once: true }}
-                    className={`border border-primary-200/50 rounded-lg shadow-sm divide-y divide-primary-200/50 ${
+                    className={`card divide-y divide-primary-200/10 ${
                       plan.highlighted
-                        ? 'border-primary-500 shadow-primary-100 relative'
-                        : 'border-primary-200/50'
+                        ? 'ring-1 ring-primary-500 relative'
+                        : ''
                     }`}
                   >
                     {plan.highlighted && (
                       <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                        <span className="inline-flex px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase bg-primary-500 text-white">
+                        <span className="inline-flex px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase bg-primary-600 text-white">
                           Mais popular
                         </span>
                       </div>
@@ -354,10 +354,10 @@ export default function Home() {
                       </p>
                       <Link
                         href="/auth/register"
-                        className={`mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium transition-colors duration-200 ${
+                        className={`mt-8 block w-full py-3 px-6 rounded-md text-center font-medium transition-colors duration-200 ${
                           plan.highlighted
-                            ? 'bg-primary-600 text-white hover:bg-primary-700'
-                            : 'bg-primary-50 text-primary-700 hover:bg-primary-100'
+                            ? 'btn btn-primary'
+                            : 'btn btn-glass'
                         }`}
                       >
                         {plan.cta}
