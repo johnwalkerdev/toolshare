@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import ThemeToggle from '@/components/ThemeToggle';
 import {
   ArrowRightIcon,
   ShieldCheckIcon,
@@ -164,7 +163,6 @@ export default function Home() {
               </nav>
 
               <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0 space-x-4">
-                <ThemeToggle />
                 <Link
                   href="/auth/login"
                   className="whitespace-nowrap text-base font-medium text-secondary hover:text-primary"
