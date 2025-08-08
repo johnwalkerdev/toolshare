@@ -149,6 +149,12 @@ export default function Home() {
                 <Link href="#pricing" className="text-base font-medium text-secondary hover:text-primary">
                   Preços
                 </Link>
+                <Link href="/client" className="text-base font-medium text-secondary hover:text-primary">
+                  Client
+                </Link>
+                <Link href="/admin" className="text-base font-medium text-secondary hover:text-primary">
+                  Admin
+                </Link>
                 <Link href="/tools" className="text-base font-medium text-secondary hover:text-primary">
                   Ferramentas
                 </Link>

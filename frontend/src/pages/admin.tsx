@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import ThemeToggle from '@/components/ThemeToggle';
 
 interface User {
   id: string;
@@ -89,6 +90,7 @@ export default function AdminPanel() {
                 placeholder="Buscar..."
               />
               <span className="text-sm text-secondary hidden sm:block">admin@toolshare.com</span>
+              <ThemeToggle />
               <button className="btn btn-glass text-danger-500">Sair</button>
             </div>
           </div>
