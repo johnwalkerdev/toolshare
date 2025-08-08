@@ -106,23 +106,23 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>ToolShare - Compartilhe acesso, mantenha o controle</title>
+        <title>ToolShare - Compartilhe ferramentas premium com IP fixo</title>
         <meta
           name="description"
-          content="Democratize o acesso a ferramentas premium com compartilhamento inteligente via IP fixo. Canva, ChatGPT, Figma e mais."
+          content="Plataforma para compartilhar ferramentas premium com segurança e IP fixo. Centralize acessos de Canva, ChatGPT, Figma e muito mais."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="ToolShare - Compartilhe acesso, mantenha o controle" />
+        <meta property="og:title" content="ToolShare - Compartilhe ferramentas premium com IP fixo" />
         <meta
           property="og:description"
-          content="Democratize o acesso a ferramentas premium com compartilhamento inteligente via IP fixo."
+          content="Compartilhe ferramentas premium com controle de sessões, IP fixo e auditoria."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://toolshare.com" />
         <meta property="og:image" content="https://toolshare.com/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="ToolShare - Compartilhe acesso, mantenha o controle" />
-        <meta name="twitter:description" content="Democratize o acesso a ferramentas premium" />
+        <meta name="twitter:title" content="ToolShare - Compartilhe ferramentas premium com IP fixo" />
+        <meta name="twitter:description" content="Compartilhe ferramentas premium com controle e segurança" />
       </Head>
 
       <div className="bg-primary text-primary min-h-screen">
@@ -193,8 +193,8 @@ export default function Home() {
                       transition={{ duration: 0.8 }}
                       className="text-4xl tracking-tight font-bold sm:text-5xl md:text-6xl"
                     >
-                      <span className="block">Compartilhe acesso,</span>
-                      <span className="block gradient-text">mantenha o controle</span>
+                      <span className="block">Compartilhe ferramentas premium</span>
+                      <span className="block gradient-text">com segurança e IP fixo</span>
                     </motion.h1>
 
                     <motion.p
@@ -203,8 +203,8 @@ export default function Home() {
                       transition={{ duration: 0.8, delay: 0.2 }}
                       className="mt-3 text-base text-secondary sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0"
                     >
-                      Democratize o acesso a ferramentas premium como Canva, ChatGPT e Figma através de
-                      compartilhamento inteligente com IP fixo. Seguro, escalável e econômico.
+                      Uma plataforma para compartilhar ferramentas como Canva, ChatGPT e Figma com IP fixo,
+                      controle de sessões e auditoria. Seguro, escalável e econômico.
                     </motion.p>
 
                     <motion.div
@@ -278,14 +278,13 @@ export default function Home() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="lg:text-center">
                 <h2 className="text-base text-primary-600 font-semibold tracking-wide uppercase">
-                  Recursos
+                  Por que compartilhar ferramentas?
                 </h2>
                 <p className="mt-2 text-3xl leading-8 font-bold tracking-tight sm:text-4xl">
-                  Tudo que você precisa para compartilhar ferramentas
+                  Tudo que você precisa para compartilhar ferramentas com controle e segurança
                 </p>
                 <p className="mt-4 max-w-2xl text-xl text-secondary lg:mx-auto">
-                  Nossa plataforma oferece segurança enterprise, controle granular e a melhor experiência
-                  para sua equipe.
+                  Centralize acessos, defina limites de sessão e mantenha o IP fixo para reduzir bloqueios e fricção.
                 </p>
               </div>
 
@@ -321,10 +320,10 @@ export default function Home() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="sm:text-center">
                 <h2 className="text-3xl font-bold sm:text-4xl">
-                  Preços simples e transparentes
+                  Planos simples para compartilhar melhor
                 </h2>
                 <p className="mt-4 text-xl text-secondary">
-                  Comece gratuitamente e escale conforme sua equipe cresce
+                  Comece agora e escale conforme sua equipe cresce
                 </p>
               </div>
 
