@@ -20,8 +20,8 @@
   --accent-secondary: #16a34a;
   
   /* Gradients */
-  --gradient-brand: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  --gradient-aurora: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+  --gradient-brand: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  --gradient-aurora: linear-gradient(135deg, #16a34a 0%, #22c55e 25%, #86efac 50%, #22c55e 75%, #16a34a 100%);
   
   /* Shadows & Effects */
   --shadow-glass: 0 8px 32px rgba(31, 38, 135, 0.15);
@@ -144,7 +144,7 @@ body {
   
   /* Mesh Gradient Background */
   .mesh-gradient {
-    background: linear-gradient(45deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+    background: linear-gradient(45deg, #16a34a 0%, #065f46 50%, #16a34a 100%);
     background-size: 200% 200%;
     animation: meshMove 8s ease-in-out infinite;
   }
@@ -258,12 +258,12 @@ body {
 @layer components {
   /* Sophisticated Buttons */
   .btn {
-    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 relative overflow-hidden;
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 relative overflow-hidden;
   }
   
   .btn-primary {
     background: var(--gradient-brand);
-    @apply text-white shadow-lg hover:shadow-2xl transform hover:scale-105 focus:ring-blue-500;
+    @apply text-white shadow-lg hover:shadow-2xl transform hover:scale-105 focus:ring-primary-500;
   }
   
   .btn-glass {
@@ -271,15 +271,15 @@ body {
   }
   
   .btn-neon {
-    @apply bg-transparent border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white hover:shadow-2xl;
+    @apply bg-transparent border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white hover:shadow-2xl;
     transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
   }
   
   .btn-neon:hover {
     box-shadow: 
-      0 0 10px rgba(59, 130, 246, 0.8),
-      0 0 20px rgba(59, 130, 246, 0.6),
-      0 0 30px rgba(59, 130, 246, 0.4);
+      0 0 10px rgba(34, 197, 94, 0.8),
+      0 0 20px rgba(34, 197, 94, 0.6),
+      0 0 30px rgba(34, 197, 94, 0.4);
   }
   
   /* Sophisticated Cards */
@@ -292,10 +292,10 @@ body {
   }
   
   .card-neon {
-    @apply bg-gray-900/20 backdrop-blur-xl border-2 border-blue-500/30 rounded-2xl p-6 relative overflow-hidden;
+    @apply bg-gray-900/20 backdrop-blur-xl border-2 border-primary-500/30 rounded-2xl p-6 relative overflow-hidden;
     box-shadow: 
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 0 20px rgba(59, 130, 246, 0.2);
+      0 0 20px rgba(34, 197, 94, 0.2);
   }
   
   .card-neon::before {
@@ -320,7 +320,7 @@ body {
   
   /* Forms */
   .input-glass {
-    @apply glass border border-white/20 dark:border-white/10 rounded-xl px-4 py-3 text-primary placeholder-text-tertiary focus:border-blue-500 focus:ring-1 focus:ring-blue-500;
+    @apply glass border border-white/20 dark:border-white/10 rounded-xl px-4 py-3 text-primary placeholder-text-tertiary focus:border-primary-500 focus:ring-1 focus:ring-primary-500;
     background: rgba(255, 255, 255, 0.05);
   }
   
