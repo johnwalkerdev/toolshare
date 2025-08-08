@@ -385,7 +385,7 @@ export default function Home() {
                         Incluso:
                       </h4>
                       <ul className="mt-6 space-y-4">
-                        {plan.features.map((feature) => (
+                        {(plan.features || []).map((feature) => (
                           <li key={feature} className="flex space-x-3">
                             <CheckIcon className="flex-shrink-0 h-5 w-5 text-success-500" />
                             <span className="text-sm text-secondary">{feature}</span>
