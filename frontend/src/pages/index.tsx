@@ -227,7 +227,7 @@ export default function Home() {
                       <div className="mt-3 sm:mt-0 sm:ml-3">
                         <Link
                           href="/demo"
-                          className="w-full flex items-center justify-center px-8 py-3 border border-primary-200 text-base font-medium rounded-md text-primary-700 bg-primary-50 hover:bg-primary-100 md:py-4 md:text-lg md:px-10 transition-colors duration-200"
+                          className="w-full flex items-center justify-center px-8 py-3 border border-primary-400/30 text-base font-medium rounded-md text-primary-300 bg-transparent hover:bg-white/5 md:py-4 md:text-lg md:px-10 transition-colors duration-200"
                         >
                           Ver demonstração
                         </Link>
@@ -254,8 +254,9 @@ export default function Home() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1, delay: 0.3 }}
-                className="h-56 w-full mesh-gradient sm:h-72 md:h-96 lg:w-full lg:h-full flex items-center justify-center"
+                className="h-56 w-full mesh-gradient sm:h-72 md:h-96 lg:w-full lg:h-full flex items-center justify-center relative"
               >
+                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top_right,_rgba(34,197,94,0.35),_transparent_40%),radial-gradient(ellipse_at_bottom_left,_rgba(34,197,94,0.25),_transparent_40%)]" />
                 <div className="grid grid-cols-3 gap-4 p-8">
                   {tools.map((tool, index) => (
                     <motion.div
@@ -263,7 +264,7 @@ export default function Home() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                      className="card-neon text-center text-white"
+                      className="card-neon text-center text-white border-primary-500/30"
                     >
                       <div className="text-2xl mb-2">{tool.icon}</div>
                       <div className="text-xs font-medium">{tool.name}</div>
@@ -390,7 +391,7 @@ export default function Home() {
           </div>
 
           {/* CTA Section */}
-          <div className="bg-primary-700">
+          <div className="bg-gradient-to-r from-primary-700 to-primary-600">
             <div className="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
               <h2 className="text-3xl font-bold text-white sm:text-4xl">
                 <span className="block">Pronto para começar?</span>
