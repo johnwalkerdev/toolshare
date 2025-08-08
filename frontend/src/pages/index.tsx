@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import ThemeToggle from '@/components/ThemeToggle';
 import {
   ArrowRightIcon,
   ShieldCheckIcon,
@@ -125,47 +126,48 @@ export default function Home() {
         <meta name="twitter:description" content="Democratize o acesso a ferramentas premium" />
       </Head>
 
-      <div className="bg-white">
+      <div className="bg-primary text-primary min-h-screen">
         {/* Navigation */}
-        <header className="relative bg-white">
+        <header className="relative nav-glass">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div className="flex justify-start lg:w-0 lg:flex-1">
                 <Link href="/" className="flex items-center">
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">🔄</span>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-lg">
+                      <span className="font-bold text-lg">🔄</span>
                     </div>
-                    <span className="text-xl font-bold text-gray-900">ToolShare</span>
+                    <span className="text-xl font-bold">ToolShare</span>
                   </div>
                 </Link>
               </div>
 
               <nav className="hidden md:flex space-x-8">
-                <Link href="#features" className="text-base font-medium text-gray-500 hover:text-gray-900">
+                <Link href="#features" className="text-base font-medium text-secondary hover:text-primary">
                   Recursos
                 </Link>
-                <Link href="#pricing" className="text-base font-medium text-gray-500 hover:text-gray-900">
+                <Link href="#pricing" className="text-base font-medium text-secondary hover:text-primary">
                   Preços
                 </Link>
-                <Link href="/tools" className="text-base font-medium text-gray-500 hover:text-gray-900">
+                <Link href="/tools" className="text-base font-medium text-secondary hover:text-primary">
                   Ferramentas
                 </Link>
-                <Link href="/contact" className="text-base font-medium text-gray-500 hover:text-gray-900">
+                <Link href="/contact" className="text-base font-medium text-secondary hover:text-primary">
                   Contato
                 </Link>
               </nav>
 
               <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0 space-x-4">
+                <ThemeToggle />
                 <Link
                   href="/auth/login"
-                  className="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900"
+                  className="whitespace-nowrap text-base font-medium text-secondary hover:text-primary"
                 >
                   Entrar
                 </Link>
                 <Link
                   href="/auth/register"
-                  className="btn-primary"
+                  className="btn btn-primary glow-hover"
                 >
                   Começar grátis
                 </Link>
@@ -176,26 +178,26 @@ export default function Home() {
 
         <main>
           {/* Hero Section */}
-          <div className="relative bg-white overflow-hidden">
+          <div className="relative overflow-hidden">
             <div className="max-w-7xl mx-auto">
-              <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
+              <div className="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
                 <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
                   <div className="sm:text-center lg:text-left">
                     <motion.h1
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8 }}
-                      className="text-4xl tracking-tight font-bold text-gray-900 sm:text-5xl md:text-6xl"
+                      className="text-4xl tracking-tight font-bold sm:text-5xl md:text-6xl"
                     >
                       <span className="block">Compartilhe acesso,</span>
-                      <span className="block text-primary-600">mantenha o controle</span>
+                      <span className="block gradient-text">mantenha o controle</span>
                     </motion.h1>
 
                     <motion.p
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8, delay: 0.2 }}
-                      className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0"
+                      className="mt-3 text-base text-secondary sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0"
                     >
                       Democratize o acesso a ferramentas premium como Canva, ChatGPT e Figma através de
                       compartilhamento inteligente com IP fixo. Seguro, escalável e econômico.
@@ -207,10 +209,10 @@ export default function Home() {
                       transition={{ duration: 0.8, delay: 0.4 }}
                       className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start"
                     >
-                      <div className="rounded-md shadow">
+                      <div className="rounded-md shadow glow-hover">
                         <Link
                           href="/auth/register"
-                          className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 md:py-4 md:text-lg md:px-10 transition-colors duration-200"
+                          className="btn btn-primary"
                         >
                           Começar grátis
                           <ArrowRightIcon className="ml-2 w-5 h-5" />
@@ -219,7 +221,7 @@ export default function Home() {
                       <div className="mt-3 sm:mt-0 sm:ml-3">
                         <Link
                           href="/demo"
-                          className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 md:py-4 md:text-lg md:px-10 transition-colors duration-200"
+                          className="w-full flex items-center justify-center px-8 py-3 border border-primary-200 text-base font-medium rounded-md text-primary-700 bg-primary-50 hover:bg-primary-100 md:py-4 md:text-lg md:px-10 transition-colors duration-200"
                         >
                           Ver demonstração
                         </Link>
@@ -232,7 +234,7 @@ export default function Home() {
                       transition={{ duration: 0.8, delay: 0.6 }}
                       className="mt-6"
                     >
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-secondary">
                         ✨ Teste grátis por 7 dias • Sem cartão de crédito
                       </p>
                     </motion.div>
@@ -246,7 +248,7 @@ export default function Home() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1, delay: 0.3 }}
-                className="h-56 w-full bg-gradient-to-br from-primary-400 to-primary-600 sm:h-72 md:h-96 lg:w-full lg:h-full flex items-center justify-center"
+                className="h-56 w-full mesh-gradient sm:h-72 md:h-96 lg:w-full lg:h-full flex items-center justify-center"
               >
                 <div className="grid grid-cols-3 gap-4 p-8">
                   {tools.map((tool, index) => (
@@ -255,7 +257,7 @@ export default function Home() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                      className="bg-white/20 backdrop-blur-md rounded-lg p-4 text-center text-white"
+                      className="card-neon text-center text-white"
                     >
                       <div className="text-2xl mb-2">{tool.icon}</div>
                       <div className="text-xs font-medium">{tool.name}</div>
@@ -267,16 +269,16 @@ export default function Home() {
           </div>
 
           {/* Features Section */}
-          <div id="features" className="py-12 bg-white">
+          <div id="features" className="py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="lg:text-center">
                 <h2 className="text-base text-primary-600 font-semibold tracking-wide uppercase">
                   Recursos
                 </h2>
-                <p className="mt-2 text-3xl leading-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
+                <p className="mt-2 text-3xl leading-8 font-bold tracking-tight sm:text-4xl">
                   Tudo que você precisa para compartilhar ferramentas
                 </p>
-                <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                <p className="mt-4 max-w-2xl text-xl text-secondary lg:mx-auto">
                   Nossa plataforma oferece segurança enterprise, controle granular e a melhor experiência
                   para sua equipe.
                 </p>
@@ -294,14 +296,14 @@ export default function Home() {
                       className="relative"
                     >
                       <dt>
-                        <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary-500 text-white">
+                        <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary-500 text-white shadow-soft">
                           <feature.icon className="h-6 w-6" aria-hidden="true" />
                         </div>
-                        <p className="ml-16 text-lg leading-6 font-medium text-gray-900">
+                        <p className="ml-16 text-lg leading-6 font-medium">
                           {feature.name}
                         </p>
                       </dt>
-                      <dd className="mt-2 ml-16 text-base text-gray-500">{feature.description}</dd>
+                      <dd className="mt-2 ml-16 text-base text-secondary">{feature.description}</dd>
                     </motion.div>
                   ))}
                 </dl>
@@ -310,13 +312,13 @@ export default function Home() {
           </div>
 
           {/* Pricing Section */}
-          <div id="pricing" className="bg-gray-50 py-12">
+          <div id="pricing" className="py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="sm:text-center">
-                <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+                <h2 className="text-3xl font-bold sm:text-4xl">
                   Preços simples e transparentes
                 </h2>
-                <p className="mt-4 text-xl text-gray-600">
+                <p className="mt-4 text-xl text-secondary">
                   Comece gratuitamente e escale conforme sua equipe cresce
                 </p>
               </div>
@@ -329,10 +331,10 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                     viewport={{ once: true }}
-                    className={`border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 ${
+                    className={`border border-primary-200/50 rounded-lg shadow-sm divide-y divide-primary-200/50 ${
                       plan.highlighted
                         ? 'border-primary-500 shadow-primary-100 relative'
-                        : 'border-gray-200'
+                        : 'border-primary-200/50'
                     }`}
                   >
                     {plan.highlighted && (
@@ -344,11 +346,11 @@ export default function Home() {
                     )}
 
                     <div className="p-6">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">{plan.name}</h3>
-                      <p className="mt-2 text-base text-gray-500">{plan.description}</p>
+                      <h3 className="text-lg leading-6 font-medium">{plan.name}</h3>
+                      <p className="mt-2 text-base text-secondary">{plan.description}</p>
                       <p className="mt-8">
-                        <span className="text-4xl font-bold text-gray-900">${plan.price}</span>
-                        <span className="text-base font-medium text-gray-500">/mês</span>
+                        <span className="text-4xl font-bold">${plan.price}</span>
+                        <span className="text-base font-medium text-secondary">/mês</span>
                       </p>
                       <Link
                         href="/auth/register"
@@ -363,14 +365,14 @@ export default function Home() {
                     </div>
 
                     <div className="pt-6 pb-8 px-6">
-                      <h4 className="text-sm font-medium text-gray-900 tracking-wide uppercase">
+                      <h4 className="text-sm font-medium tracking-wide uppercase">
                         Incluso:
                       </h4>
                       <ul className="mt-6 space-y-4">
                         {plan.features.map((feature) => (
                           <li key={feature} className="flex space-x-3">
                             <CheckIcon className="flex-shrink-0 h-5 w-5 text-success-500" />
-                            <span className="text-sm text-gray-500">{feature}</span>
+                            <span className="text-sm text-secondary">{feature}</span>
                           </li>
                         ))}
                       </ul>
@@ -421,21 +423,21 @@ export default function Home() {
         </main>
 
         {/* Footer */}
-        <footer className="bg-white">
+        <footer>
           <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
             <div className="flex justify-center space-x-6 md:order-2">
-              <Link href="/privacy" className="text-gray-400 hover:text-gray-500">
+              <Link href="/privacy" className="text-secondary hover:text-primary">
                 Privacidade
               </Link>
-              <Link href="/terms" className="text-gray-400 hover:text-gray-500">
+              <Link href="/terms" className="text-secondary hover:text-primary">
                 Termos
               </Link>
-              <Link href="/contact" className="text-gray-400 hover:text-gray-500">
+              <Link href="/contact" className="text-secondary hover:text-primary">
                 Contato
               </Link>
             </div>
             <div className="mt-8 md:mt-0 md:order-1">
-              <p className="text-center text-base text-gray-400">
+              <p className="text-center text-base text-secondary">
                 &copy; 2024 ToolShare. Todos os direitos reservados.
               </p>
             </div>

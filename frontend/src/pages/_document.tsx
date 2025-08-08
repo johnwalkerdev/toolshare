@@ -2,7 +2,7 @@ import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
   return (
-    <Html lang="en">
+    <Html lang="en" className="dark">
       <Head>
         {/* Meta tags */}
         <meta charSet="utf-8" />
@@ -41,7 +41,7 @@ export default function Document() {
         <meta name="msapplication-TileColor" content="#3b82f6" />
         <meta name="msapplication-tap-highlight" content="no" />
       </Head>
-      <body className="antialiased">
+      <body className="antialiased bg-primary text-primary transition-colors">
         <Main />
         <NextScript />
       </body>
