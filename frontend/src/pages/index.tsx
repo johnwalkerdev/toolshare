@@ -273,6 +273,52 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Hero Section - improved */}
+          <section className="relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid lg:grid-cols-2 gap-10 items-center">
+              <div>
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="text-4xl md:text-6xl font-extrabold leading-tight"
+                >
+                  Compartilhe ferramentas premium
+                  <span className="block gradient-text">com segurança e IP fixo</span>
+                </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.15 }}
+                  className="mt-4 text-lg text-secondary max-w-xl"
+                >
+                  Uma assinatura, várias plataformas. IP fixo para evitar bloqueios, controle de sessões por
+                  plano/time e auditoria completa para sua operação.
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="mt-6 flex flex-col sm:flex-row gap-3"
+                >
+                  <Link href="/auth/register" className="btn btn-primary">Começar agora</Link>
+                  <Link href="#pricing" className="btn btn-glass">Ver planos</Link>
+                </motion.div>
+              </div>
+              <div className="relative">
+                <div className="mesh-gradient rounded-3xl h-72 md:h-96" />
+                <div className="absolute inset-0 p-6 grid grid-cols-3 gap-4">
+                  {tools.slice(0,6).map((tool, i) => (
+                    <motion.div key={tool.name} initial={{opacity:0,scale:0.9}} animate={{opacity:1,scale:1}} transition={{delay:0.2 + i*0.05}} className="card-neon text-center text-white">
+                      <div className="text-2xl mb-2">{tool.icon}</div>
+                      <div className="text-xs font-medium">{tool.name}</div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Brands Section */}
           <section className="py-10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -399,7 +445,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* CTA Section */}
+          {/* CTA Section with Guarantee */}
           <div className="bg-gradient-to-r from-primary-700 to-primary-600">
             <div className="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
               <h2 className="text-3xl font-bold text-white sm:text-4xl">
@@ -409,11 +455,11 @@ export default function Home() {
               <p className="mt-4 text-lg leading-6 text-primary-200">
                 Sem cartão de crédito. Sem compromisso. Cancele quando quiser.
               </p>
-              <div className="mt-4 card">
-                <h3 className="text-xl font-semibold mb-2">Garantia</h3>
+              <div className="mt-6 card bg-black/30">
+                <h3 className="text-xl font-semibold mb-2">Garantia Incondicional de 7 Dias</h3>
                 <p className="text-secondary">
-                  Teste o ToolShare por 7 dias sem compromisso. Se você não ficar feliz com a experiência,
-                  reembolsamos 100% do valor pago nesse período, sem complicação.
+                  Experimente sem risco. Se a plataforma não elevar sua produtividade, solicite reembolso
+                  integral em até 7 dias após a compra. Sem perguntas, sem pegadinhas.
                 </p>
               </div>
               <form onSubmit={handleSubmit} className="mt-8 sm:flex sm:justify-center">
@@ -446,27 +492,40 @@ export default function Home() {
         </main>
 
         {/* Footer */}
-        <footer>
-          <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
-            <div className="flex justify-center space-x-6 md:order-2">
-              <Link href="/privacy" className="text-secondary hover:text-primary">
-                Privacidade
-              </Link>
-              <Link href="/terms" className="text-secondary hover:text-primary">
-                Termos
-              </Link>
-              <Link href="/contact" className="text-secondary hover:text-primary">
-                Contato
-              </Link>
-              <Link href="https://instagram.com/toolshare" target="_blank" className="text-secondary hover:text-primary">
-                Instagram
-              </Link>
+        <footer className="mt-0 border-t border-primary-200/10 bg-black/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 grid gap-10 md:grid-cols-4">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 text-white flex items-center justify-center shadow-lg">🔄</div>
+                <span className="font-bold">ToolShare</span>
+              </div>
+              <p className="text-secondary text-sm">Compartilhe ferramentas premium com IP fixo, controle de sessões e auditoria.</p>
             </div>
-            <div className="mt-8 md:mt-0 md:order-1">
-              <p className="text-center text-base text-secondary">
-                &copy; 2024 ToolShare. Todos os direitos reservados.
-              </p>
+            <div>
+              <h4 className="font-semibold mb-3">Produto</h4>
+              <ul className="space-y-2 text-secondary text-sm">
+                <li><Link href="#features" className="hover:text-primary">Recursos</Link></li>
+                <li><Link href="#pricing" className="hover:text-primary">Planos</Link></li>
+                <li><Link href="/client" className="hover:text-primary">Client</Link></li>
+                <li><Link href="/admin" className="hover:text-primary">Admin</Link></li>
+              </ul>
             </div>
+            <div>
+              <h4 className="font-semibold mb-3">Legal</h4>
+              <ul className="space-y-2 text-secondary text-sm">
+                <li><Link href="/privacy" className="hover:text-primary">Privacidade</Link></li>
+                <li><Link href="/terms" className="hover:text-primary">Termos</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3">Siga</h4>
+              <ul className="space-y-2 text-secondary text-sm">
+                <li><Link href="https://instagram.com/toolshare" target="_blank" className="hover:text-primary">Instagram</Link></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-primary-200/10 py-6">
+            <p className="text-center text-sm text-secondary">&copy; 2024 ToolShare. Todos os direitos reservados.</p>
           </div>
         </footer>
       </div>
