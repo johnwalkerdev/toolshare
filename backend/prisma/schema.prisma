@@ -1,0 +1,282 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Plans table
+model Plan {
+  id                  Int      @id @default(autoincrement())
+  nome                String
+  slug                String   @unique
+  precoMensal         Decimal? @db.Decimal(10, 2)
+  precoAnual          Decimal? @db.Decimal(10, 2)
+  limiteUsuarios      Int?
+  limiteSessoes       Int?
+  limiteFerramentas   Int?
+  recursos            Json?
+  ativo               Boolean  @default(true)
+  ordem               Int      @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  users User[]
+  teams Team[]
+
+  @@map("plans")
+}
+
+// Users table
+model User {
+  id                String    @id @default(cuid())
+  uuid              String    @unique @default(uuid())
+  nome              String
+  email             String    @unique
+  senhaHash         String
+  planId            Int?
+  ativo             Boolean   @default(true)
+  emailVerificado   Boolean   @default(false)
+  twoFactorEnabled  Boolean   @default(false)
+  twoFactorSecret   String?
+  expiresAt         DateTime?
+  ultimoLogin       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  plan              Plan?               @relation(fields: [planId], references: [id])
+  teamUsers         TeamUser[]
+  ownedTeams        Team[]              @relation("TeamOwner")
+  userToolProxies   UserToolProxy[]
+  accessLogs        AccessLog[]
+  userSessions      UserSession[]
+
+  @@map("users")
+}
+
+// Teams table
+model Team {
+  id              Int        @id @default(autoincrement())
+  uuid            String     @unique @default(uuid())
+  nome            String
+  slug            String     @unique
+  ownerUserId     String
+  planId          Int?
+  ativo           Boolean    @default(true)
+  limiteUsuarios  Int        @default(5)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  // Relations
+  owner           User               @relation("TeamOwner", fields: [ownerUserId], references: [id])
+  plan            Plan?              @relation(fields: [planId], references: [id])
+  teamUsers       TeamUser[]
+  teamToolProxies TeamToolProxy[]
+  accessLogs      AccessLog[]
+
+  @@map("teams")
+}
+
+// Team users junction table
+model TeamUser {
+  id        Int      @id @default(autoincrement())
+  teamId    Int
+  userId    String
+  role      String   @default("member") // admin, manager, member
+  ativo     Boolean  @default(true)
+  joinedAt  DateTime @default(now())
+
+  // Relations
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@map("team_users")
+}
+
+// Tool categories table
+model ToolCategory {
+  id          Int      @id @default(autoincrement())
+  nome        String
+  slug        String   @unique
+  descricao   String?
+  icone       String?
+  cor         String?
+  ordem       Int      @default(0)
+  ativo       Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  tools       Tool[]
+
+  @@map("tool_categories")
+}
+
+// Tools table
+model Tool {
+  id                Int          @id @default(autoincrement())
+  nome              String
+  slug              String       @unique
+  urlAcesso         String
+  descricao         String?
+  icone             String?
+  categoriaId       Int?
+  proxyId           Int?
+  limiteUsuarios    Int          @default(1)
+  timeoutSessao     Int          @default(3600) // seconds
+  ativo             Boolean      @default(true)
+  planosPermitidos  Int[]        // Array of plan IDs
+  metadata          Json?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  // Relations
+  categoria         ToolCategory?      @relation(fields: [categoriaId], references: [id])
+  proxy             Proxy?             @relation(fields: [proxyId], references: [id])
+  toolAccounts      ToolAccount[]
+  teamToolProxies   TeamToolProxy[]
+  userToolProxies   UserToolProxy[]
+  accessLogs        AccessLog[]
+
+  @@map("tools")
+}
+
+// Tool accounts table
+model ToolAccount {
+  id                Int      @id @default(autoincrement())
+  toolId            Int
+  nome              String?
+  email             String?
+  senhaEncriptada   String?
+  apiToken          String?
+  metadata          Json?
+  ativo             Boolean  @default(true)
+  ultimoUso         DateTime?
+  createdAt         DateTime @default(now())
+
+  // Relations
+  tool              Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@map("tool_accounts")
+}
+
+// Proxies table
+model Proxy {
+  id                    Int       @id @default(autoincrement())
+  nome                  String
+  host                  String
+  porta                 Int
+  tipo                  String    @default("http") // http, https, socks5
+  authUser              String?
+  authPass              String?   // encrypted
+  ativo                 Boolean   @default(true)
+  regiao                String?
+  latenciaMedia         Int?      // ms
+  uptimePercentage      Decimal? @db.Decimal(5, 2)
+  ultimaVerificacao     DateTime?
+  metadata              Json?
+  createdAt             DateTime  @default(now())
+
+  // Relations
+  tools                 Tool[]
+  teamToolProxies       TeamToolProxy[]
+  userToolProxies       UserToolProxy[]
+  accessLogs            AccessLog[]
+
+  @@unique([host, porta])
+  @@map("proxies")
+}
+
+// Team tool proxies junction table
+model TeamToolProxy {
+  teamId    Int
+  toolId    Int
+  proxyId   Int
+  createdAt DateTime @default(now())
+
+  // Relations
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  proxy     Proxy    @relation(fields: [proxyId], references: [id], onDelete: Cascade)
+
+  @@id([teamId, toolId])
+  @@map("team_tool_proxies")
+}
+
+// User tool proxies junction table
+model UserToolProxy {
+  userId    String
+  toolId    Int
+  proxyId   Int
+  createdAt DateTime @default(now())
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  proxy     Proxy    @relation(fields: [proxyId], references: [id], onDelete: Cascade)
+
+  @@id([userId, toolId])
+  @@map("user_tool_proxies")
+}
+
+// Access logs table
+model AccessLog {
+  id                String    @id @default(cuid())
+  userId            String?
+  teamId            Int?
+  toolId            Int?
+  proxyId           Int?
+  ipAddress         String?
+  userAgent         String?
+  startedAt         DateTime  @default(now())
+  endedAt           DateTime?
+  status            String?   // active, completed, failed, timeout
+  durationSeconds   Int?
+  bytesTransferred  BigInt?
+  metadata          Json?
+
+  // Relations
+  user              User?     @relation(fields: [userId], references: [id])
+  team              Team?     @relation(fields: [teamId], references: [id])
+  tool              Tool?     @relation(fields: [toolId], references: [id])
+  proxy             Proxy?    @relation(fields: [proxyId], references: [id])
+
+  @@map("access_logs")
+}
+
+// User sessions table (for JWT blacklist and session management)
+model UserSession {
+  id          String    @id @default(cuid())
+  userId      String
+  token       String    @unique
+  refreshToken String?  @unique
+  expiresAt   DateTime
+  isActive    Boolean   @default(true)
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+}
+
+// System settings table
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
+}
