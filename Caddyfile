@@ -1,0 +1,24 @@
+{
+  email ${ACME_EMAIL}
+}
+
+${APP_DOMAIN} {
+  encode gzip
+
+  @api {
+    path /api/*
+  }
+
+  reverse_proxy @api backend:4000
+
+  # Serve Next.js app
+  reverse_proxy frontend:3000
+}
+
+# Optional: expose Adminer if needed under a subdomain
+admin.${APP_DOMAIN} {
+  encode gzip
+  reverse_proxy adminer:8080
+}
+
+

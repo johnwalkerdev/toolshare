@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: toolshare_db
+    environment:
+      POSTGRES_DB: toolshare
+      POSTGRES_USER: toolshare_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - toolshare_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: toolshare_cache
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - toolshare_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: toolshare_api
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://toolshare_user:${POSTGRES_PASSWORD}@postgres:5432/toolshare
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:?set in .env}
+      BROWSERLESS_URL: http://browser:3000
+      CORS_ORIGIN: https://${APP_DOMAIN}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - toolshare_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: toolshare_frontend
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_APP_URL: https://${APP_DOMAIN}
+      # Calls are relative (e.g., /api/...), Caddy proxies to backend
+    depends_on:
+      - backend
+    networks:
+      - toolshare_network
+
+  browser:
+    image: ghcr.io/browserless/chromium:latest
+    container_name: toolshare_browser
+    environment:
+      - TOLERATE_ORPHANS=true
+      - PREBOOT_CHROME=true
+      - DEFAULT_BLOCK_ADS=true
+      - DEFAULT_LAUNCH_ARGS=["--no-sandbox","--disable-dev-shm-usage","--no-first-run","--no-default-browser-check"]
+    networks:
+      - toolshare_network
+
+  caddy:
+    image: caddy:2.7
+    container_name: toolshare_caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - toolshare_network
+
+volumes:
+  postgres_data:
+  redis_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  toolshare_network:
+    driver: bridge
+
+

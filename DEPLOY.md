@@ -1,6 +1,6 @@
-# ToolShare - Guia de Deploy na Vercel (100% GRATUITO)
+# ToolShare - Deploy (Vercel gratuito ou VPS all-in-one com Caddy)
 
-## 🆓 Deploy Gratuito em 5 Minutos
+## 🆓 Deploy Gratuito em 5 Minutos (Vercel)
 
 ### 1. PostgreSQL Gratuito - Neon (Recomendado)
 1. **Acesse**: [neon.tech](https://neon.tech)
@@ -85,7 +85,7 @@ npm run setup
 
 **Total: 5 minutos** ⏱️
 
-## 🔧 Variáveis de Ambiente - Template Completo
+## 🔧 Variáveis de Ambiente - Template Completo (Vercel)
 
 ```env
 # 📄 COLE ISTO NO VERCEL (substitua apenas a DATABASE_URL):
@@ -134,7 +134,7 @@ Use o domínio da sua aplicação Vercel:
 https://toolshare-123456.vercel.app
 ```
 
-## 📋 Checklist de Deploy
+## 📋 Checklist de Deploy (Vercel)
 
 - [ ] Repositório no GitHub criado
 - [ ] Projeto conectado ao Vercel
@@ -203,3 +203,31 @@ Se encontrar problemas durante o deploy, verifique:
 ---
 
 🎉 **Parabéns!** Seu ToolShare está rodando em produção!
+
+---
+
+## 🚀 Deploy em VPS (Tudo em uma máquina com Docker + Caddy)
+
+### Pré-requisitos
+- VPS com Docker e Docker Compose
+- Domínio apontando para o IP da VPS
+
+### 1) Criar .env (raiz do repo)
+```
+APP_DOMAIN=seu-dominio.com
+ACME_EMAIL=voce@seu-dominio.com
+POSTGRES_PASSWORD=troque_me
+JWT_SECRET=uma_chave_bem_grande_e_secreta
+```
+
+### 2) Subir em produção
+```
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+Isso inicia: Postgres, Redis, Backend, Frontend, Browserless e Caddy (TLS automático). A aplicação ficará disponível em `https://APP_DOMAIN`.
+
+### 3) Notas
+- O Frontend chama `/api/...` e o Caddy roteia para o Backend em `backend:4000`.
+- Opcional: habilitamos `admin.APP_DOMAIN` para Adminer no `Caddyfile`.
+- Para aplicar schema do banco manualmente: `cd backend && npm run db:generate && npm run db:push`.
