@@ -153,16 +153,7 @@ export default function ClientDashboard() {
                     </div>
                   </div>
                   <div className="mt-4 flex items-center gap-3">
-                <button onClick={async()=>{
-                  try{
-                    const r=await fetch(`/api/tools/${tool.id}/session`,{method:'POST'});
-                    const j=await r.json();
-                    if(!r.ok) throw new Error(j?.message||'falha');
-                    window.open(j.data.url,'_blank');
-                  }catch(e){
-                    alert('Não foi possível iniciar a sessão');
-                  }
-                }} className="btn btn-primary">Abrir</button>
+                <a href={`/sessions/${tool.id}`} className="btn btn-primary">Abrir</a>
                     <button className="btn btn-glass">Detalhes</button>
                   </div>
                 </motion.div>
