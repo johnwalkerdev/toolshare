@@ -303,3 +303,97 @@ model SystemSetting {
 
   @@map("system_settings")
 }
+
+// =============================
+// Todoist-like models
+// =============================
+
+model TodoProject {
+  id         Int       @id @default(autoincrement())
+  userId     String
+  name       String
+  color      String?   // hex or token
+  isFavorite Boolean   @default(false)
+  sortOrder  Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Relations
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sections   TodoSection[]
+  tasks      TodoTask[]
+
+  @@index([userId, sortOrder])
+  @@map("todo_projects")
+}
+
+model TodoSection {
+  id         Int       @id @default(autoincrement())
+  projectId  Int
+  name       String
+  sortOrder  Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Relations
+  project    TodoProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks      TodoTask[]
+
+  @@index([projectId, sortOrder])
+  @@map("todo_sections")
+}
+
+model TodoTask {
+  id           Int        @id @default(autoincrement())
+  userId       String
+  projectId    Int?
+  sectionId    Int?
+  content      String
+  description  String?
+  priority     Int        @default(1) // 1..4 (4 highest)
+  dueDate      DateTime?
+  dueString    String?    // original natural language
+  isCompleted  Boolean    @default(false)
+  completedAt  DateTime?
+  sortOrder    Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // Relations
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project      TodoProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  section      TodoSection? @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+  taskLabels   TodoTaskLabel[]
+
+  @@index([userId, isCompleted, dueDate])
+  @@index([projectId, sectionId, sortOrder])
+  @@map("todo_tasks")
+}
+
+model TodoLabel {
+  id        Int       @id @default(autoincrement())
+  userId    String
+  name      String
+  color     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taskLabels TodoTaskLabel[]
+
+  @@unique([userId, name])
+  @@map("todo_labels")
+}
+
+model TodoTaskLabel {
+  taskId   Int
+  labelId  Int
+
+  // Relations
+  task     TodoTask  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  label    TodoLabel @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, labelId])
+  @@map("todo_task_labels")
+}

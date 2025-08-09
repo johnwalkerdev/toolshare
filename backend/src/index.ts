@@ -13,6 +13,7 @@ import userRoutes from '@/routes/users';
 import toolRoutes from '@/routes/tools';
 import proxyRoutes from '@/routes/proxies';
 import adminRoutes from '@/routes/admin';
+import todosRoutes from '@/routes/todos';
 
 // Import middleware
 import { errorHandler } from '@/middleware/errorHandler';
@@ -109,6 +110,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/tools', toolRoutes);
 app.use('/api/proxies', proxyRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/todos', todosRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
