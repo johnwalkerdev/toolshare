@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
@@ -40,6 +40,21 @@ const tools = [
 export default function ClientDashboard() {
   const [activeCat, setActiveCat] = useState('all');
   const [query, setQuery] = useState('');
+  const [favorites, setFavorites] = useState<number[]>([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('toolshare_favorites');
+    if (saved) setFavorites(JSON.parse(saved));
+  }, []);
+
+  const toggleFavorite = (id: number) => {
+    setFavorites(prev => {
+      const exists = prev.includes(id);
+      const next = exists ? prev.filter(x => x !== id) : [...prev, id];
+      localStorage.setItem('toolshare_favorites', JSON.stringify(next));
+      return next;
+    });
+  };
 
   const filtered = tools.filter(
     (t) => (activeCat === 'all' || t.category === activeCat) && t.name.toLowerCase().includes(query.toLowerCase())
@@ -60,18 +75,11 @@ export default function ClientDashboard() {
               </div>
             </div>
             <nav className="py-2">
-              {sidebar.map((item) => (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition-colors ${
-                    item.id === 'ferramentas' ? 'bg-white/5 border-l-4 border-primary-500' : ''
-                  }`}
-                >
-                  <item.icon className="w-5 h-5 text-secondary" />
-                  <span>{item.name}</span>
-                </Link>
-              ))}
+              <Link href="/client" className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition-colors bg-white/5 border-l-4 border-primary-500"><HomeIcon className="w-5 h-5 text-secondary"/><span>Dashboard</span></Link>
+              <Link href="/client" className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition-colors"><Squares2X2Icon className="w-5 h-5 text-secondary"/><span>Ferramentas</span></Link>
+              <Link href="/client/favorites" className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition-colors"><StarIcon className="w-5 h-5 text-secondary"/><span>Favoritos</span></Link>
+              <Link href="/client/todos" className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition-colors"><UsersIcon className="w-5 h-5 text-secondary"/><span>To‑Do</span></Link>
+              <Link href="/client/settings" className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition-colors"><Cog6ToothIcon className="w-5 h-5 text-secondary"/><span>Configurações</span></Link>
             </nav>
             <div className="px-4 py-3 border-t border-primary-200/10">
               <button className="flex items-center gap-2 text-danger-500 text-sm hover:text-danger-400">
@@ -151,9 +159,10 @@ export default function ClientDashboard() {
                         <p className="text-sm text-secondary line-clamp-2">{tool.desc}</p>
                       </div>
                     </div>
+                    <button onClick={() => toggleFavorite(tool.id)} title="Favoritar" className={`text-sm ${favorites.includes(tool.id)?'text-primary-400':'text-secondary'} hover:text-primary-300`}>★</button>
                   </div>
                   <div className="mt-4 flex items-center gap-3">
-                <a href={`/sessions/${tool.id}`} className="btn btn-primary">Abrir</a>
+                    <a href={`/sessions/${tool.id}`} className="btn btn-primary">Abrir</a>
                     <button className="btn btn-glass">Detalhes</button>
                   </div>
                 </motion.div>
