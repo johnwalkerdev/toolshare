@@ -194,6 +194,29 @@ model Proxy {
   @@map("proxies")
 }
 
+// Browser profiles (AdsPower-like)
+model BrowserProfile {
+  id          Int       @id @default(autoincrement())
+  userId      String?
+  toolId      Int?
+  name        String
+  proxyId     Int?
+  userAgent   String?
+  viewport    Json?
+  timezone    String?
+  languages   String[]
+  persistent  Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user        User?     @relation(fields: [userId], references: [id])
+  tool        Tool?     @relation(fields: [toolId], references: [id])
+  proxy       Proxy?    @relation(fields: [proxyId], references: [id])
+
+  @@map("browser_profiles")
+}
+
 // Team tool proxies junction table
 model TeamToolProxy {
   teamId    Int

@@ -174,6 +174,47 @@ router.get('/dashboard', authenticate, requireAdmin, asyncHandler(async (req, re
 }));
 
 /**
+ * Browser profiles (AdsPower-like)
+ */
+router.get('/profiles', authenticate, requireAdmin, asyncHandler(async (_req, res) => {
+  const profiles = await prisma.browserProfile.findMany({ include: { proxy: true, tool: true, user: { select: { id: true, email: true, nome: true } } } });
+  res.json({ success: true, data: { profiles } });
+}));
+
+router.post('/profiles', authenticate, requireAdmin, [
+  body('name').isString().isLength({ min: 2 }),
+  body('toolId').optional().isInt(),
+  body('userId').optional().isString(),
+  body('proxyId').optional().isInt(),
+  body('userAgent').optional().isString(),
+  body('viewport').optional(),
+  body('timezone').optional().isString(),
+  body('languages').optional().isArray(),
+  body('persistent').optional().isBoolean()
+], asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ success: false, errors: errors.array() });
+  const created = await prisma.browserProfile.create({ data: req.body });
+  res.status(201).json({ success: true, data: { profile: created } });
+}));
+
+router.put('/profiles/:id', authenticate, requireAdmin, [
+  param('id').isInt()
+], asyncHandler(async (req, res) => {
+  const id = parseInt(req.params.id);
+  const updated = await prisma.browserProfile.update({ where: { id }, data: req.body });
+  res.json({ success: true, data: { profile: updated } });
+}));
+
+router.delete('/profiles/:id', authenticate, requireAdmin, [
+  param('id').isInt()
+], asyncHandler(async (req, res) => {
+  const id = parseInt(req.params.id);
+  await prisma.browserProfile.delete({ where: { id } });
+  res.json({ success: true });
+}));
+
+/**
  * GET /api/admin/users
  * Get all users with pagination and filtering
  */

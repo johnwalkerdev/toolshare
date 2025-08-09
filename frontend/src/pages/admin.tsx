@@ -46,6 +46,8 @@ export default function AdminPanel() {
   const [proxies, setProxies] = useState<ProxyRow[]>([]);
 
   const [newUser, setNewUser] = useState({ nome: '', email: '', planId: '' });
+  const [profiles, setProfiles] = useState<any[]>([]);
+  const [newProfile, setNewProfile] = useState({ name: '', toolId: '', userId: '', proxyId: '', userAgent: '' });
 
   useEffect(() => {
     fetchData();
@@ -79,6 +81,9 @@ export default function AdminPanel() {
         const r = await fetch('/api/proxies');
         const j = await r.json();
         setProxies(j.data?.proxies || []);
+      } else if (activeTab === 'tools') {
+        // load profiles alongside tools to show at once
+        try { const pr = await fetch('/api/admin/profiles'); const pj = await pr.json(); setProfiles(pj.data?.profiles || []);} catch {}
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -128,6 +133,13 @@ export default function AdminPanel() {
     } else {
       alert('Falha ao salvar override');
     }
+  };
+
+  const createProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const payload:any = { name:newProfile.name, toolId:newProfile.toolId? Number(newProfile.toolId):undefined, userId:newProfile.userId||undefined, proxyId:newProfile.proxyId? Number(newProfile.proxyId):undefined, userAgent:newProfile.userAgent||undefined };
+    const r = await fetch('/api/admin/profiles', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    if (r.ok) { setNewProfile({ name:'', toolId:'', userId:'', proxyId:'', userAgent:'' }); fetchData(); } else { alert('Falha ao criar profile'); }
   };
 
   const openRemoteBrowser = async (toolId: number) => {
@@ -345,6 +357,39 @@ export default function AdminPanel() {
                     <input className="input-glass md:col-span-2" placeholder="Planos permitidos (IDs separados por vírgula)" value={newTool.planosPermitidos} onChange={e=>setNewTool({...newTool, planosPermitidos:e.target.value})} />
                     <button type="submit" className="btn btn-primary">Adicionar</button>
                   </form>
+                </div>
+                {/* Browser profiles (AdsPower-like) */}
+                <div className="px-6 py-4 border-b border-primary-200/10">
+                  <h3 className="font-semibold mb-3">Perfis de Navegador</h3>
+                  <form onSubmit={createProfile} className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+                    <input className="input-glass" placeholder="Nome" value={newProfile.name} onChange={e=>setNewProfile({...newProfile, name:e.target.value})} required />
+                    <input className="input-glass" placeholder="ToolId" value={newProfile.toolId} onChange={e=>setNewProfile({...newProfile, toolId:e.target.value})} />
+                    <input className="input-glass" placeholder="UserId (opcional)" value={newProfile.userId} onChange={e=>setNewProfile({...newProfile, userId:e.target.value})} />
+                    <input className="input-glass" placeholder="ProxyId (opcional)" value={newProfile.proxyId} onChange={e=>setNewProfile({...newProfile, proxyId:e.target.value})} />
+                    <button className="btn btn-primary" type="submit">Criar perfil</button>
+                  </form>
+                  <div className="mt-4 overflow-x-auto">
+                    <table className="min-w-full divide-y divide-primary-200/20">
+                      <thead className="bg-tertiary">
+                        <tr>
+                          <th className="px-6 py-2 text-left text-xs font-medium text-secondary uppercase">Nome</th>
+                          <th className="px-6 py-2 text-left text-xs font-medium text-secondary uppercase">Tool</th>
+                          <th className="px-6 py-2 text-left text-xs font-medium text-secondary uppercase">Proxy</th>
+                          <th className="px-6 py-2 text-left text-xs font-medium text-secondary uppercase">Usuário</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-primary-200/10">
+                        {profiles.map(p => (
+                          <tr key={p.id}>
+                            <td className="px-6 py-2">{p.name}</td>
+                            <td className="px-6 py-2 text-sm text-secondary">{p.tool?.nome || '-'}</td>
+                            <td className="px-6 py-2 text-sm text-secondary">{p.proxy?.nome || '-'}</td>
+                            <td className="px-6 py-2 text-sm text-secondary">{p.user?.email || '-'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-primary-200/20">
