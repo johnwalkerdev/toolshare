@@ -13,13 +13,7 @@ import {
   GlobeAltIcon,
 } from '@heroicons/react/24/outline';
 
-const sidebar = [
-  { id: 'dashboard', name: 'Dashboard', icon: HomeIcon, href: '/client' },
-  { id: 'ferramentas', name: 'Ferramentas', icon: Squares2X2Icon, href: '/client' },
-  { id: 'favoritos', name: 'Favoritos', icon: StarIcon, href: '/client?fav=1' },
-  { id: 'equipe', name: 'Equipe', icon: UsersIcon, href: '/client?tab=equipe' },
-  { id: 'config', name: 'Configurações', icon: Cog6ToothIcon, href: '/client?tab=config' },
-];
+// sidebar removido (layout fix); links renderizados diretamente no JSX
 
 const filters = [
   { id: 'all', name: 'Todas as ferramentas' },
