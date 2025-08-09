@@ -20,6 +20,17 @@ interface Tool {
   limiteUsuarios: number;
 }
 
+interface ProxyRow {
+  id: number;
+  nome: string;
+  host: string;
+  porta: number;
+  tipo: string;
+  ativo: boolean;
+  regiao?: string;
+  latenciaMedia?: number;
+}
+
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState('users');
   const [users, setUsers] = useState<User[]>([]);
@@ -32,6 +43,9 @@ export default function AdminPanel() {
   });
   const [overrideOpenId, setOverrideOpenId] = useState<number | null>(null);
   const [overrideForm, setOverrideForm] = useState<{scope:'user'|'team'; scopeId:string; proxyId:string}>({scope:'user', scopeId:'', proxyId:''});
+  const [proxies, setProxies] = useState<ProxyRow[]>([]);
+
+  const [newUser, setNewUser] = useState({ nome: '', email: '', planId: '' });
 
   useEffect(() => {
     fetchData();
@@ -61,6 +75,10 @@ export default function AdminPanel() {
         const response = await fetch('/api/admin/tools');
         const data = await response.json();
         setTools(data.data?.tools || data);
+      } else if (activeTab === 'proxies') {
+        const r = await fetch('/api/proxies');
+        const j = await r.json();
+        setProxies(j.data?.proxies || []);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -88,6 +106,18 @@ export default function AdminPanel() {
       alert('Erro ao criar ferramenta');
     }
   };
+
+  const createUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try{
+      const r = await fetch('/api/admin/users', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ nome:newUser.nome, email:newUser.email, planId: newUser.planId? Number(newUser.planId): undefined }) });
+      if(!r.ok) throw new Error('erro');
+      setNewUser({ nome:'', email:'', planId:'' });
+      fetchData();
+    }catch{
+      alert('Falha ao criar usuário');
+    }
+  }
 
   const saveOverride = async (toolId: number) => {
     const r = await fetch(`/api/admin/tools/${toolId}/override`, { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ scope: overrideForm.scope, scopeId: overrideForm.scopeId, proxyId: Number(overrideForm.proxyId) }) });
@@ -213,6 +243,15 @@ export default function AdminPanel() {
                   <h2 className="text-lg font-semibold">
                     Usuários ({users.length})
                   </h2>
+                </div>
+                {/* Create user */}
+                <div className="px-6 py-4 border-b border-primary-200/10">
+                  <form onSubmit={createUser} className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+                    <input className="input-glass" placeholder="Nome" required value={newUser.nome} onChange={e=>setNewUser({...newUser, nome:e.target.value})}/>
+                    <input className="input-glass" placeholder="Email" type="email" required value={newUser.email} onChange={e=>setNewUser({...newUser, email:e.target.value})}/>
+                    <input className="input-glass" placeholder="PlanId (opcional)" value={newUser.planId} onChange={e=>setNewUser({...newUser, planId:e.target.value})}/>
+                    <button className="btn btn-primary" type="submit">Adicionar</button>
+                  </form>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-primary-200/20">
@@ -407,14 +446,36 @@ export default function AdminPanel() {
             {/* Proxies Tab */}
             {activeTab === 'proxies' && (
               <div className="card p-6">
-                <h2 className="text-lg font-semibold mb-4">
-                  Gerenciamento de Proxies
-                </h2>
-                <p className="text-secondary">
-                  Funcionalidade em desenvolvimento. Aqui será possível gerenciar 
-                  os proxies disponíveis, verificar status de conectividade e 
-                  configurar novos servidores proxy.
-                </p>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold">Proxies ({proxies.length})</h2>
+                  <button onClick={fetchData} className="btn btn-glass">Atualizar</button>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-primary-200/20">
+                    <thead className="bg-tertiary">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Nome</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Host</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Região</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Latência</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-primary-200/10">
+                      {proxies.map(p => (
+                        <tr key={p.id}>
+                          <td className="px-6 py-3">{p.nome}</td>
+                          <td className="px-6 py-3">{p.tipo}://{p.host}:{p.porta}</td>
+                          <td className="px-6 py-3 text-sm text-secondary">{p.regiao || '-'}</td>
+                          <td className="px-6 py-3 text-sm text-secondary">{p.latenciaMedia ? `${p.latenciaMedia}ms` : '-'}</td>
+                          <td className="px-6 py-3">
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${p.ativo ? 'bg-success-500/15 text-success-400' : 'bg-danger-500/15 text-danger-400'}`}>{p.ativo ? 'Ativo' : 'Inativo'}</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
 
